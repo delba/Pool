@@ -1,0 +1,13 @@
+language: objective-c
+
+branches:
+  only:
+    - master
+
+xcode_project: Pool.xcodeproj
+xcode_scheme: PoolTests
+osx_image: xcode7.3
+xcode_sdk: iphonesimulator9.3
+
+script:
+  - xcodebuild test -project Pool.xcodeproj -scheme PoolTests -destination "platform=iOS Simulator,name=iPhone 6s"
