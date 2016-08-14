@@ -81,11 +81,9 @@ internal enum Message {
     }
     
     internal func toData() -> NSData {
-        let dictionary = [
+        return NSKeyedArchiver.archivedDataWithRootObject([
             "type": type,
             "associated_values": associatedValues
-        ]
-        
-        return NSKeyedArchiver.archivedDataWithRootObject(dictionary)
+        ])
     }
 }
