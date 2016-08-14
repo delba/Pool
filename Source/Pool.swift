@@ -30,11 +30,11 @@ internal typealias Value = AnyObject
 public class Pool {
     public let name: String
     
-    internal let session: Session
-    
     private var local: [Key: Value] = [:]
     private var manifest: [Key: MCPeerID] = [:]
     private var callbacks: [Key: (Value? -> Void)] = [:]
+    
+    private let session: Session
     
     public init(name: String) {
         self.name = name
