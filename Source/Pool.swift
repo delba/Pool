@@ -24,8 +24,8 @@
 
 import MultipeerConnectivity
 
-typealias Key = String
-typealias Value = AnyObject
+internal typealias Key = String
+internal typealias Value = AnyObject
 
 public class Pool {
     public let name: String
