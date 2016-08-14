@@ -24,7 +24,7 @@
 
 import MultipeerConnectivity
 
-class Session: NSObject {
+internal class Session: NSObject {
     internal var delegate: SessionDelegate?
     
     private let advertiser: MCNearbyServiceAdvertiser

@@ -24,7 +24,7 @@
 
 import MultipeerConnectivity
 
-protocol SessionDelegate {
+internal protocol SessionDelegate {
     func session(session: Session, peerDidConnect peer: MCPeerID)
     func session(session: Session, peerDidDisconnect peer: MCPeerID)
     func session(session: Session, didReceiveRequestForKey key: Key, fromPeer peer: MCPeerID)

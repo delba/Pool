@@ -22,13 +22,13 @@
 // SOFTWARE.
 //
 
-enum Message {
+internal enum Message {
     case Request(Key)
     case Response(Key, Value?)
     case Insert([Key])
     case Delete([Key])
     
-    var type: String {
+    private var type: String {
         switch self {
         case Request:  return "request"
         case Response: return "response"
@@ -37,7 +37,7 @@ enum Message {
         }
     }
     
-    var associatedValues: [AnyObject] {
+    private var associatedValues: [AnyObject] {
         switch self {
         case let Request(key):
             return [key]
@@ -50,7 +50,7 @@ enum Message {
         }
     }
     
-    init?(data: NSData) {
+    internal init?(data: NSData) {
         guard let
             dictionary = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [String: AnyObject],
             type = dictionary["type"] as? String,
