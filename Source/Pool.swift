@@ -83,11 +83,9 @@ extension Pool: SessionDelegate {
     }
     
     func session(session: Session, peerDidDisconnect peer: MCPeerID) {
-        guard let keys = (manifest as NSDictionary).allKeysForObject(peer) as? [Key] else {
-            return
+        for (key, value) in manifest where peer == value {
+            manifest[key] = nil
         }
-        
-        keys.forEach { manifest[$0] = nil }
     }
     
     func session(session: Session, didReceiveRequestForKey key: Key, fromPeer peer: MCPeerID) {
