@@ -96,8 +96,8 @@ extension Pool: SessionDelegate {
     
     func session(session: Session, didReceiveResponseWithKey key: Key, andValue value: Value?, fromPeer peer: MCPeerID) {
         callbacks[key]?(value)
-        local[key] = value
         callbacks[key] = nil
+        local[key] = value
     }
     
     func session(session: Session, didReceiveInsertForKeys keys: [Key], fromPeer peer: MCPeerID) {
