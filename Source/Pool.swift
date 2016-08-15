@@ -73,6 +73,14 @@ public class Pool {
         
         local[key] = nil
     }
+    
+    public func removeAllObjects() {
+        session.sendDelete(Array(local.keys), toPeers: session.connectedPeers)
+        
+        local.removeAll()
+        manifest.removeAll()
+        callbacks.removeAll()
+    }
 }
 
 // MARK: - SessionDelegate
