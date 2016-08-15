@@ -39,14 +39,10 @@ internal enum Message {
     
     private var associatedValues: [AnyObject] {
         switch self {
-        case let Request(key):
-            return [key]
-        case let Response(key, value):
-            return [key, value].flatMap { $0 }
-        case let Insert(keys):
-            return [keys]
-        case let Delete(keys):
-            return [keys]
+        case let Request(key):   return [key]
+        case let Response(k, v): return [k, v].flatMap({$0})
+        case let Insert(keys):   return [keys]
+        case let Delete(keys):   return [keys]
         }
     }
     

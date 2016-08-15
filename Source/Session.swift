@@ -109,12 +109,9 @@ extension Session: MCNearbyServiceBrowserDelegate {
 extension Session: MCSessionDelegate {
     func session(session: MCSession, peer peerID: MCPeerID, didChangeState state: MCSessionState) {
         switch state {
-        case .Connected:
-            delegate?.session(self, peerDidConnect: peerID)
-        case .NotConnected:
-            delegate?.session(self, peerDidDisconnect: peerID)
-        default:
-            break
+        case .Connected:    delegate?.session(self, peerDidConnect: peerID)
+        case .NotConnected: delegate?.session(self, peerDidDisconnect: peerID)
+        default: break
         }
     }
     
@@ -122,14 +119,10 @@ extension Session: MCSessionDelegate {
         guard let message = Message(data: data) else { return }
         
         switch message {
-        case let .Request(key):
-            delegate?.session(self, didReceiveRequestForKey: key, fromPeer: peerID)
-        case let .Response(key, value):
-            delegate?.session(self, didReceiveResponseWithKey: key, andValue: value, fromPeer: peerID)
-        case let .Insert(keys):
-            delegate?.session(self, didReceiveInsertForKeys: keys, fromPeer: peerID)
-        case let .Delete(keys):
-            delegate?.session(self, didReceiveDeleteForKeys: keys, fromPeer: peerID)
+        case let .Request(key):   delegate?.session(self, didReceiveRequestForKey: key, fromPeer: peerID)
+        case let .Response(k, v): delegate?.session(self, didReceiveResponseWithKey: k, andValue: v, fromPeer: peerID)
+        case let .Insert(keys):   delegate?.session(self, didReceiveInsertForKeys: keys, fromPeer: peerID)
+        case let .Delete(keys):   delegate?.session(self, didReceiveDeleteForKeys: keys, fromPeer: peerID)
         }
     }
     
