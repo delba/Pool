@@ -33,13 +33,13 @@ internal class Session: NSObject {
     private let peer = MCPeerID(displayName: UIDevice.currentDevice().name)
     
     internal var connectedPeers: [MCPeerID] {
-        return self.session.connectedPeers
+        return session.connectedPeers
     }
     
     internal init(name: String) {
-        self.advertiser = MCNearbyServiceAdvertiser(peer: peer, discoveryInfo: nil, serviceType: name)
-        self.browser = MCNearbyServiceBrowser(peer: peer, serviceType: name)
-        self.session = MCSession(peer: peer, securityIdentity: nil, encryptionPreference: .Required)
+        advertiser = MCNearbyServiceAdvertiser(peer: peer, discoveryInfo: nil, serviceType: name)
+        browser = MCNearbyServiceBrowser(peer: peer, serviceType: name)
+        session = MCSession(peer: peer, securityIdentity: nil, encryptionPreference: .Required)
         
         super.init()
         

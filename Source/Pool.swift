@@ -38,7 +38,7 @@ public class Pool {
     
     public init(name: String) {
         self.name = name
-        self.session = Session(name: name)
+        session = Session(name: name)
         session.delegate = self
     }
     
@@ -53,7 +53,7 @@ public class Pool {
             return
         }
         
-        self.callbacks[key] = completion
+        callbacks[key] = completion
         
         session.sendRequest(key, toPeers: [peer])
     }
