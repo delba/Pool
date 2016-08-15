@@ -40,7 +40,7 @@ internal enum Message {
     private var values: [AnyObject] {
         switch self {
         case let Request(key):   return [key]
-        case let Response(k, v): return [k, v].flatMap({$0})
+        case let Response(k, v): return [k, v].flatMap{$0}
         case let Insert(keys):   return [keys]
         case let Delete(keys):   return [keys]
         }
