@@ -55,18 +55,22 @@ internal enum Message {
             return nil
         }
         
+        // ["type": "request", "values": ["key"]]
         if type == "request", let key = values[safe: 0] as? Key {
             self = Request(key)
         }
         
+        // ["type": "response", "values": ["key", "value"]]
         else if type == "response", let key = values[safe: 0] as? Key {
             self = Response(key, values[safe: 1])
         }
         
+        // ["type": "insert", "values": [["key1", "key2"]]]
         else if type == "insert", let keys = values[safe: 0] as? [Key] {
             self = Insert(keys)
         }
         
+        // ["type": "delete", "values": [["key1", "key2"]]]
         else if type == "delete", let keys = values[safe: 0] as? [Key] {
             self = Delete(keys)
         }
