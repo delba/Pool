@@ -22,8 +22,22 @@
 // SOFTWARE.
 //
 
+// MARK: - Array
+
 extension Array {
     subscript(safe index: Int) -> Element? {
         return indices ~= index ? self[index] : nil
+    }
+}
+
+// MARK: - KeyArchiver
+
+struct KeyArchiver {
+    static func archive(object: AnyObject) -> NSData {
+        return NSKeyedArchiver.archivedDataWithRootObject(object)
+    }
+    
+    static func unarchive(data: NSData) -> AnyObject? {
+        return NSKeyedUnarchiver.unarchiveObjectWithData(data)
     }
 }

@@ -48,7 +48,7 @@ internal enum Message {
     
     internal init?(data: NSData) {
         guard let
-            dictionary = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [String: AnyObject],
+            dictionary = KeyArchiver.unarchive(data) as? [String: AnyObject],
             type = dictionary["type"] as? String,
             values = dictionary["values"] as? [AnyObject]
         else {
@@ -81,7 +81,7 @@ internal enum Message {
     }
     
     internal func toData() -> NSData {
-        return NSKeyedArchiver.archivedDataWithRootObject([
+        return KeyArchiver.archive([
             "type": type,
             "values": values
         ])
