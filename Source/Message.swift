@@ -37,7 +37,7 @@ internal enum Message {
         }
     }
     
-    private var associatedValues: [AnyObject] {
+    private var values: [AnyObject] {
         switch self {
         case let Request(key):   return [key]
         case let Response(k, v): return [k, v].flatMap({$0})
@@ -50,24 +50,24 @@ internal enum Message {
         guard let
             dictionary = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [String: AnyObject],
             type = dictionary["type"] as? String,
-            associatedValues = dictionary["associated_values"] as? [AnyObject]
+            values = dictionary["values"] as? [AnyObject]
         else {
             return nil
         }
         
-        if type == "request", let key = associatedValues[safe: 0] as? Key {
+        if type == "request", let key = values[safe: 0] as? Key {
             self = Request(key)
         }
         
-        else if type == "response", let key = associatedValues[safe: 0] as? Key {
-            self = Response(key, associatedValues[safe: 1])
+        else if type == "response", let key = values[safe: 0] as? Key {
+            self = Response(key, values[safe: 1])
         }
         
-        else if type == "insert", let keys = associatedValues[safe: 0] as? [Key] {
+        else if type == "insert", let keys = values[safe: 0] as? [Key] {
             self = Insert(keys)
         }
         
-        else if type == "delete", let keys = associatedValues[safe: 0] as? [Key] {
+        else if type == "delete", let keys = values[safe: 0] as? [Key] {
             self = Delete(keys)
         }
         
@@ -79,7 +79,7 @@ internal enum Message {
     internal func toData() -> NSData {
         return NSKeyedArchiver.archivedDataWithRootObject([
             "type": type,
-            "associated_values": associatedValues
+            "values": values
         ])
     }
 }
