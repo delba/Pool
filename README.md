@@ -12,7 +12,7 @@ pool.setObject(image, forKey: "http://example.com/shot.png")
 // On device B
 
 pool.objectForKey("http://example.com/shot.png") { [weak self] image in
-    self?.imageView = image as? UIImage
+    self?.imageView.image = image as? UIImage
 }
 ```
 
