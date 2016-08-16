@@ -26,31 +26,49 @@ import XCTest
 @testable import Pool
 
 class MessageTests: XCTestCase {
-    
     func testRequest() {
-        let data = Message.Request("key").toData()
-        let message = Message(data: data)
+        let message: Message = .Request("a")
+        let data = message.toData()
         
-        XCTAssertNotNil(message)
-        
-        guard case .Request("key") = message! else {
+        guard case .Request("a") = Message(data: data)! else {
             XCTFail()
             return
         }
     }
     
     func testResponse() {
-        let data = Message.Response("key", 42).toData()
-        let message = Message(data: data)
+        let message: Message = .Response("a", 42)
+        let data = message.toData()
         
-        XCTAssertNotNil(message)
-        
-        guard case .Response("key", let value) = message! else {
+        guard case .Response("a", let value) = Message(data: data)! else {
             XCTFail()
             return
         }
         
-        XCTAssertNotNil(value)
         XCTAssertEqual(42, value as? Int)
+    }
+    
+    func testInsert() {
+        let message: Message = .Insert(["a", "b", "c"])
+        let data = message.toData()
+        
+        guard case .Insert(let keys) = Message(data: data)! else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(["a", "b", "c"], keys)
+    }
+    
+    func testDelete() {
+        let message: Message = .Delete(["a", "b", "c"])
+        let data = message.toData()
+        
+        guard case .Delete(let keys) = Message(data: data)! else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(["a", "b", "c"], keys)
     }
 }
