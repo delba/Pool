@@ -35,7 +35,7 @@ To integrate Pool into your Xcode project using Carthage, specify it in your `Ca
 github "delba/Pool"
 ```
 
-### Cocoapods
+### CocoaPods
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects.
 
