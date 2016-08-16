@@ -23,11 +23,19 @@
 //
 
 internal enum Message {
+    /// A request message for the given key.
     case Request(Key)
+    
+    /// A response message with the given key and value.
     case Response(Key, Value?)
+    
+    /// An insert message for the given keys.
     case Insert([Key])
+    
+    /// A delete message for the given keys.
     case Delete([Key])
     
+    /// The message type.
     private var type: String {
         switch self {
         case Request:  return "request"
@@ -37,6 +45,7 @@ internal enum Message {
         }
     }
     
+    /// The message associated values.
     private var values: [AnyObject] {
         switch self {
         case let Request(key):   return [key]
@@ -46,6 +55,13 @@ internal enum Message {
         }
     }
     
+    /**
+     Creates and return a new message or nil if not convertible.
+     
+     - parameter data: The `NSData` representation of the message.
+    
+     - returns: A new message or nil if not convertible.
+     */
     internal init?(data: NSData) {
         guard let
             dictionary = KeyArchiver.unarchive(data) as? [String: AnyObject],
@@ -80,6 +96,11 @@ internal enum Message {
         }
     }
     
+    /**
+     Returns an `NSData` object containing the encoded form of the message.
+     
+     - returns: The `NSData` representation of the message.
+     */
     internal func toData() -> NSData {
         return KeyArchiver.archive([
             "type": type,
