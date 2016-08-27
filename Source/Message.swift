@@ -22,6 +22,8 @@
 // SOFTWARE.
 //
 
+// MARK: Message
+
 internal enum Message {
     /// A request message for the given key.
     case Request(Key)
@@ -63,36 +65,17 @@ internal enum Message {
      - returns: A new message or nil if not convertible.
      */
     internal init?(data: NSData) {
-        guard let
-            dictionary = KeyArchiver.unarchive(data) as? [String: AnyObject],
-            type = dictionary["type"] as? String,
-            args = dictionary["args"] as? [AnyObject]
-        else {
-            return nil
-        }
+        guard let dictionary = KeyArchiver.unarchive(data) as? [String: AnyObject],
+            let type = dictionary["type"] as? String,
+            let args = dictionary["args"] as? [AnyObject]
+            else { return nil }
         
-        // ["type": "request", "values": ["key"]]
-        if type == "request", let key = args[safe: 0] as? Key {
-            self = Request(key)
-        }
-        
-        // ["type": "response", "values": ["key", "value"]]
-        else if type == "response", let key = args[safe: 0] as? Key {
-            self = Response(key, args[safe: 1])
-        }
-        
-        // ["type": "insert", "values": [["key1", "key2"]]]
-        else if type == "insert", let keys = args[safe: 0] as? [Key] {
-            self = Insert(keys)
-        }
-        
-        // ["type": "delete", "values": [["key1", "key2"]]]
-        else if type == "delete", let keys = args[safe: 0] as? [Key] {
-            self = Delete(keys)
-        }
-        
-        else {
-            return nil
+        switch type {
+        case "request":  self.init(request:  args)
+        case "response": self.init(response: args)
+        case "insert":   self.init(insert:   args)
+        case "delete":   self.init(delete:   args)
+        default: return nil
         }
     }
     
@@ -106,5 +89,47 @@ internal enum Message {
             "type": type,
             "args": args
         ])
+    }
+}
+
+// MARK: Request
+
+private extension Message {
+    init?(request args: [AnyObject]) {
+        guard let key = args[safe: 0] as? Key else { return nil }
+        
+        self = Request(key)
+    }
+}
+
+// MARK: Response
+
+private extension Message {
+    init?(response args: [AnyObject]) {
+        guard let key = args[safe: 0] as? Key else { return nil }
+        
+        let value = args[safe: 1]
+        
+        self = Response(key, value)
+    }
+}
+
+// MARK: Insert
+
+private extension Message {
+    init?(insert args: [AnyObject]) {
+        guard let keys = args[safe: 0] as? [Key] else { return nil }
+        
+        self = Insert(keys)
+    }
+}
+
+// MARK: Delete
+
+private extension Message {
+    init?(delete args: [AnyObject]) {
+        guard let keys = args[safe: 0] as? [Key] else { return nil }
+        
+        self = Delete(keys)
     }
 }
