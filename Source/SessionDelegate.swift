@@ -25,10 +25,10 @@
 import MultipeerConnectivity
 
 internal protocol SessionDelegate {
-    func session(session: Session, peerDidConnect peer: MCPeerID)
-    func session(session: Session, peerDidDisconnect peer: MCPeerID)
-    func session(session: Session, didReceiveRequestForKey key: Key, fromPeer peer: MCPeerID)
-    func session(session: Session, didReceiveResponseWithKey key: Key, andValue value: Value?, fromPeer peer: MCPeerID)
-    func session(session: Session, didReceiveInsertForKeys keys: [Key], fromPeer peer: MCPeerID)
-    func session(session: Session, didReceiveDeleteForKeys keys: [Key], fromPeer peer: MCPeerID)
+    func session(_ session: Session, peerDidConnect peer: MCPeerID)
+    func session(_ session: Session, peerDidDisconnect peer: MCPeerID)
+    func session(_ session: Session, didReceiveRequestForKey key: Key, fromPeer peer: MCPeerID)
+    func session(_ session: Session, didReceiveResponseWithKey key: Key, andValue value: Value?, fromPeer peer: MCPeerID)
+    func session(_ session: Session, didReceiveInsertForKeys keys: [Key], fromPeer peer: MCPeerID)
+    func session(_ session: Session, didReceiveDeleteForKeys keys: [Key], fromPeer peer: MCPeerID)
 }

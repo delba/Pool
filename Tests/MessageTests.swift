@@ -27,20 +27,21 @@ import XCTest
 
 class MessageTests: XCTestCase {
     func testRequest() {
-        let message: Message = .Request("a")
+        let message: Message = .request("a")
         let data = message.toData()
         
-        guard case .Request("a") = Message(data: data)! else {
+        guard case .request("a") = Message(data: data)! else {
             XCTFail()
             return
         }
     }
     
     func testResponse() {
-        let message: Message = .Response("a", 42)
+        let message: Message = .response("a", 42)
+        print(message.values)
         let data = message.toData()
         
-        guard case .Response("a", let value) = Message(data: data)! else {
+        guard case .response("a", let value) = Message(data: data)! else {
             XCTFail()
             return
         }
@@ -49,10 +50,10 @@ class MessageTests: XCTestCase {
     }
     
     func testInsert() {
-        let message: Message = .Insert(["a", "b", "c"])
+        let message: Message = .insert(["a", "b", "c"])
         let data = message.toData()
         
-        guard case .Insert(let keys) = Message(data: data)! else {
+        guard case .insert(let keys) = Message(data: data)! else {
             XCTFail()
             return
         }
@@ -61,10 +62,10 @@ class MessageTests: XCTestCase {
     }
     
     func testDelete() {
-        let message: Message = .Delete(["a", "b", "c"])
+        let message: Message = .delete(["a", "b", "c"])
         let data = message.toData()
         
-        guard case .Delete(let keys) = Message(data: data)! else {
+        guard case .delete(let keys) = Message(data: data)! else {
             XCTFail()
             return
         }

@@ -33,11 +33,11 @@ extension Array {
 // MARK: - KeyArchiver
 
 struct KeyArchiver {
-    static func archive(object: AnyObject) -> NSData {
-        return NSKeyedArchiver.archivedDataWithRootObject(object)
+    static func archive(_ object: Any) -> Data {
+        return NSKeyedArchiver.archivedData(withRootObject: object)
     }
     
-    static func unarchive(data: NSData) -> AnyObject? {
-        return NSKeyedUnarchiver.unarchiveObjectWithData(data)
+    static func unarchive(_ data: Data) -> Any? {
+        return NSKeyedUnarchiver.unarchiveObject(with: data)
     }
 }

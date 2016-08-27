@@ -27,10 +27,10 @@ import MultipeerConnectivity
 internal class Session: NSObject {
     internal var delegate: SessionDelegate?
     
-    private let advertiser: MCNearbyServiceAdvertiser
-    private let browser: MCNearbyServiceBrowser
-    private let session: MCSession
-    private let peer = MCPeerID(displayName: UIDevice.currentDevice().name)
+    fileprivate let advertiser: MCNearbyServiceAdvertiser
+    fileprivate let browser: MCNearbyServiceBrowser
+    fileprivate let session: MCSession
+    fileprivate let peer = MCPeerID(displayName: UIDevice.current.name)
     
     internal var connectedPeers: [MCPeerID] {
         return session.connectedPeers
@@ -39,7 +39,7 @@ internal class Session: NSObject {
     internal init(name: String) {
         advertiser = MCNearbyServiceAdvertiser(peer: peer, discoveryInfo: nil, serviceType: name)
         browser = MCNearbyServiceBrowser(peer: peer, serviceType: name)
-        session = MCSession(peer: peer, securityIdentity: nil, encryptionPreference: .Required)
+        session = MCSession(peer: peer, securityIdentity: nil, encryptionPreference: .required)
         
         super.init()
         
@@ -57,76 +57,73 @@ internal class Session: NSObject {
         browser.stopBrowsingForPeers()
     }
     
-    internal func sendRequest(key: Key, toPeers peers: [MCPeerID]) {
-        let message: Message = .Request(key)
+    internal func sendRequest(_ key: Key, toPeers peers: [MCPeerID]) {
+        let message: Message = .request(key)
         sendMessage(message, toPeers: peers)
     }
     
-    internal func sendResponse(key: Key, value: Value?, toPeers peers: [MCPeerID]) {
-        let message: Message = .Response(key, value)
+    internal func sendResponse(_ key: Key, value: Value?, toPeers peers: [MCPeerID]) {
+        let message: Message = .response(key, value)
         sendMessage(message, toPeers: peers)
     }
     
-    internal func sendInsert(keys: [Key], toPeers peers: [MCPeerID]) {
-        let message: Message = .Insert(keys)
+    internal func sendInsert(_ keys: [Key], toPeers peers: [MCPeerID]) {
+        let message: Message = .insert(keys)
         sendMessage(message, toPeers: peers)
     }
     
-    internal func sendDelete(keys: [Key], toPeers peers: [MCPeerID]) {
-        let message: Message = .Delete(keys)
+    internal func sendDelete(_ keys: [Key], toPeers peers: [MCPeerID]) {
+        let message: Message = .delete(keys)
         sendMessage(message, toPeers: peers)
     }
     
-    private func sendMessage(message: Message, toPeers peers: [MCPeerID]) {
+    fileprivate func sendMessage(_ message: Message, toPeers peers: [MCPeerID]) {
         let data = message.toData()
-        try! session.sendData(data, toPeers: peers, withMode: .Reliable)
+        try! session.send(data as Data, toPeers: peers, with: .reliable)
     }
 }
 
 // MARK: - MCNearbyServiceAdvertiserDelegate
 
 extension Session: MCNearbyServiceAdvertiserDelegate {
-    func advertiser(advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: NSData?, invitationHandler: (Bool, MCSession) -> Void) {
+    func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         invitationHandler(true, session)
     }
-    
-    func advertiser(advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: NSError) {}
 }
 
 // MARK: - MCNearbyServiceBrowserDelegate
 
 extension Session: MCNearbyServiceBrowserDelegate {
-    func browser(browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
-        browser.invitePeer(peerID, toSession: session, withContext: nil, timeout: 10)
+    func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
+        browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
     }
     
-    func browser(browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: NSError) {}
-    func browser(browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {}
+    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {}
 }
 
 // MARK: - MCSessionDelegate
 
 extension Session: MCSessionDelegate {
-    func session(session: MCSession, peer peerID: MCPeerID, didChangeState state: MCSessionState) {
+    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
-        case .Connected:    delegate?.session(self, peerDidConnect: peerID)
-        case .NotConnected: delegate?.session(self, peerDidDisconnect: peerID)
+        case .connected:    delegate?.session(self, peerDidConnect: peerID)
+        case .notConnected: delegate?.session(self, peerDidDisconnect: peerID)
         default: break
         }
     }
     
-    func session(session: MCSession, didReceiveData data: NSData, fromPeer peerID: MCPeerID) {
+    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         guard let message = Message(data: data) else { return }
         
         switch message {
-        case let .Request(key):   delegate?.session(self, didReceiveRequestForKey: key, fromPeer: peerID)
-        case let .Response(k, v): delegate?.session(self, didReceiveResponseWithKey: k, andValue: v, fromPeer: peerID)
-        case let .Insert(keys):   delegate?.session(self, didReceiveInsertForKeys: keys, fromPeer: peerID)
-        case let .Delete(keys):   delegate?.session(self, didReceiveDeleteForKeys: keys, fromPeer: peerID)
+        case let .request(key):   delegate?.session(self, didReceiveRequestForKey: key, fromPeer: peerID)
+        case let .response(k, v): delegate?.session(self, didReceiveResponseWithKey: k, andValue: v, fromPeer: peerID)
+        case let .insert(keys):   delegate?.session(self, didReceiveInsertForKeys: keys, fromPeer: peerID)
+        case let .delete(keys):   delegate?.session(self, didReceiveDeleteForKeys: keys, fromPeer: peerID)
         }
     }
     
-    func session(session: MCSession, didReceiveStream stream: NSInputStream, withName streamName: String, fromPeer peerID: MCPeerID) {}
-    func session(session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, atURL localURL: NSURL, withError error: NSError?) {}
-    func session(session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, withProgress progress: NSProgress) {}
+    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {}
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {}
+    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {}
 }

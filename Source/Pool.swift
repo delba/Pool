@@ -25,16 +25,16 @@
 import MultipeerConnectivity
 
 internal typealias Key = String
-internal typealias Value = AnyObject
+internal typealias Value = Any
 
-public class Pool {
-    public let name: String
+open class Pool {
+    open let name: String
     
-    private var local: [Key: Value] = [:]
-    private var manifest: [Key: MCPeerID] = [:]
-    private var callbacks: [Key: (Value? -> Void)] = [:]
+    fileprivate var local: [Key: Value] = [:]
+    fileprivate var manifest: [Key: MCPeerID] = [:]
+    fileprivate var callbacks: [Key: ((Value?) -> Void)] = [:]
     
-    private let session: Session
+    fileprivate let session: Session
     
     public init(name: String) {
         self.name = name
@@ -42,7 +42,7 @@ public class Pool {
         session.delegate = self
     }
     
-    public func objectForKey(key: String, completion: (AnyObject? -> Void)) {
+    open func objectForKey(_ key: String, completion: ((Any?) -> Void)) {
         if let object = local[key] {
             completion(object)
             return
@@ -58,7 +58,7 @@ public class Pool {
         session.sendRequest(key, toPeers: [peer])
     }
     
-    public func setObject(object: AnyObject, forKey key: String) {
+    open func setObject(_ object: Any, forKey key: String) {
         if local[key] == nil {
             session.sendInsert([key], toPeers: session.connectedPeers)
         }
@@ -66,7 +66,7 @@ public class Pool {
         local[key] = object
     }
     
-    public func removeObjectForKey(key: String) {
+    open func removeObjectForKey(_ key: String) {
         if local[key] != nil {
             session.sendDelete([key], toPeers: session.connectedPeers)
         }
@@ -74,7 +74,7 @@ public class Pool {
         local[key] = nil
     }
     
-    public func removeAllObjects() {
+    open func removeAllObjects() {
         session.sendDelete(Array(local.keys), toPeers: session.connectedPeers)
         
         local.removeAll()
@@ -86,31 +86,31 @@ public class Pool {
 // MARK: - SessionDelegate
 
 extension Pool: SessionDelegate {
-    func session(session: Session, peerDidConnect peer: MCPeerID) {
+    func session(_ session: Session, peerDidConnect peer: MCPeerID) {
         session.sendInsert(Array(local.keys), toPeers: [peer])
     }
     
-    func session(session: Session, peerDidDisconnect peer: MCPeerID) {
+    func session(_ session: Session, peerDidDisconnect peer: MCPeerID) {
         for (key, value) in manifest where peer == value {
             manifest[key] = nil
         }
     }
     
-    func session(session: Session, didReceiveRequestForKey key: Key, fromPeer peer: MCPeerID) {
+    func session(_ session: Session, didReceiveRequestForKey key: Key, fromPeer peer: MCPeerID) {
         session.sendResponse(key, value: local[key], toPeers: [peer])
     }
     
-    func session(session: Session, didReceiveResponseWithKey key: Key, andValue value: Value?, fromPeer peer: MCPeerID) {
+    func session(_ session: Session, didReceiveResponseWithKey key: Key, andValue value: Value?, fromPeer peer: MCPeerID) {
         callbacks[key]?(value)
         callbacks[key] = nil
         local[key] = value
     }
     
-    func session(session: Session, didReceiveInsertForKeys keys: [Key], fromPeer peer: MCPeerID) {
+    func session(_ session: Session, didReceiveInsertForKeys keys: [Key], fromPeer peer: MCPeerID) {
         keys.forEach { manifest[$0] = peer }
     }
     
-    func session(session: Session, didReceiveDeleteForKeys keys: [Key], fromPeer peer: MCPeerID) {
+    func session(_ session: Session, didReceiveDeleteForKeys keys: [Key], fromPeer peer: MCPeerID) {
         keys.forEach { manifest[$0] = nil }
     }
 }
