@@ -51,7 +51,7 @@ internal enum Message {
     private var args: [AnyObject] {
         switch self {
         case let Request(key):   return [key]
-        case let Response(k, v): return [k, v].flatMap{$0}
+        case let Response(k, v): return [k, v].flatMap({ $0 })
         case let Insert(keys):   return [keys]
         case let Delete(keys):   return [keys]
         }
@@ -87,7 +87,7 @@ internal enum Message {
     internal func toData() -> NSData {
         return KeyArchiver.archive([
             "type": type,
-            "args": args
+            "args": args,
         ])
     }
 }
