@@ -27,34 +27,34 @@ import MultipeerConnectivity
 internal class Session: NSObject {
     internal var delegate: SessionDelegate?
     
-    private let advertiser: MCNearbyServiceAdvertiser
-    private let browser: MCNearbyServiceBrowser
+    private let peer: MCPeerID
     private let session: MCSession
-    private let peer = MCPeerID(displayName: UIDevice.currentDevice().name)
+    private let browser: MCNearbyServiceBrowser
+    private let advertiser: MCNearbyServiceAdvertiser
     
-    internal var connectedPeers: [MCPeerID] {
-        return session.connectedPeers
+    internal var peers: [MCPeerID] {
+        return session.connectedPeers.filter { $0 != peer }
     }
     
     internal init(name: String) {
-        advertiser = MCNearbyServiceAdvertiser(peer: peer, discoveryInfo: nil, serviceType: name)
-        browser = MCNearbyServiceBrowser(peer: peer, serviceType: name)
+        peer = MCPeerID(displayName: UIDevice.currentDevice().name)
         session = MCSession(peer: peer, securityIdentity: nil, encryptionPreference: .Required)
+        browser = MCNearbyServiceBrowser(peer: peer, serviceType: name)
+        advertiser = MCNearbyServiceAdvertiser(peer: peer, discoveryInfo: nil, serviceType: name)
         
         super.init()
         
-        advertiser.delegate = self
-        advertiser.startAdvertisingPeer()
-        
-        browser.delegate = self
-        browser.startBrowsingForPeers()
-        
         session.delegate = self
+        browser.delegate = self
+        advertiser.delegate = self
+        
+        browser.startBrowsingForPeers()
+        advertiser.startAdvertisingPeer()
     }
     
     deinit {
-        advertiser.stopAdvertisingPeer()
         browser.stopBrowsingForPeers()
+        advertiser.stopAdvertisingPeer()
     }
     
     internal func sendRequest(key: Key, toPeers peers: [MCPeerID]) {

@@ -30,11 +30,11 @@ internal typealias Value = AnyObject
 public class Pool {
     public let name: String
     
+    private let session: Session
+    
     private var local: [Key: Value] = [:]
     private var manifest: [Key: MCPeerID] = [:]
     private var callbacks: [Key: (Value? -> Void)] = [:]
-    
-    private let session: Session
     
     public init(name: String) {
         self.name = name
@@ -60,7 +60,7 @@ public class Pool {
     
     public func setObject(object: AnyObject, forKey key: String) {
         if local[key] == nil {
-            session.sendInsert([key], toPeers: session.connectedPeers)
+            session.sendInsert([key], toPeers: session.peers)
         }
         
         local[key] = object
@@ -68,14 +68,14 @@ public class Pool {
     
     public func removeObjectForKey(key: String) {
         if local[key] != nil {
-            session.sendDelete([key], toPeers: session.connectedPeers)
+            session.sendDelete([key], toPeers: session.peers)
         }
         
         local[key] = nil
     }
     
     public func removeAllObjects() {
-        session.sendDelete(Array(local.keys), toPeers: session.connectedPeers)
+        session.sendDelete(Array(local.keys), toPeers: session.peers)
         
         local.removeAll()
         manifest.removeAll()
