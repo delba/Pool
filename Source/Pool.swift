@@ -34,7 +34,7 @@ public class Pool {
     
     private var local: [Key: Value] = [:]
     private var manifest: [Key: MCPeerID] = [:]
-    private var callbacks: [Key: (Value? -> Void)] = [:]
+    private var callbacks: [Key: (Value?) -> Void] = [:]
     
     public init(name: String) {
         self.name = name
@@ -42,7 +42,7 @@ public class Pool {
         session.delegate = self
     }
     
-    public func objectForKey(key: String, completion: (AnyObject? -> Void)) {
+    public func objectForKey(key: String, completion: (AnyObject?) -> Void) {
         if let object = local[key] {
             completion(object)
             return
