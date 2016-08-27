@@ -33,7 +33,7 @@ internal class Session: NSObject {
     private let advertiser: MCNearbyServiceAdvertiser
     
     internal var peers: [MCPeerID] {
-        return session.connectedPeers.filter { $0 != peer }
+        return session.connectedPeers.filter({ $0 != peer })
     }
     
     internal init(name: String) {
@@ -89,8 +89,6 @@ extension Session: MCNearbyServiceAdvertiserDelegate {
     func advertiser(advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: NSData?, invitationHandler: (Bool, MCSession) -> Void) {
         invitationHandler(true, session)
     }
-    
-    func advertiser(advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: NSError) {}
 }
 
 // MARK: - MCNearbyServiceBrowserDelegate
@@ -100,7 +98,6 @@ extension Session: MCNearbyServiceBrowserDelegate {
         browser.invitePeer(peerID, toSession: session, withContext: nil, timeout: 10)
     }
     
-    func browser(browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: NSError) {}
     func browser(browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {}
 }
 
