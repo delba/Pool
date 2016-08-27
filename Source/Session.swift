@@ -98,7 +98,9 @@ extension Session: MCNearbyServiceBrowserDelegate {
         browser.invitePeer(peerID, toSession: session, withContext: nil, timeout: 10)
     }
     
-    func browser(browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {}
+    func browser(browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+        delegate?.session(self, peerDidDisconnect: peerID)
+    }
 }
 
 // MARK: - MCSessionDelegate
