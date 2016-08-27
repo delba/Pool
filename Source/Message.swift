@@ -46,7 +46,7 @@ internal enum Message {
     }
     
     /// The message associated values.
-    private var values: [AnyObject] {
+    private var args: [AnyObject] {
         switch self {
         case let Request(key):   return [key]
         case let Response(k, v): return [k, v].flatMap{$0}
@@ -66,28 +66,28 @@ internal enum Message {
         guard let
             dictionary = KeyArchiver.unarchive(data) as? [String: AnyObject],
             type = dictionary["type"] as? String,
-            values = dictionary["values"] as? [AnyObject]
+            args = dictionary["args"] as? [AnyObject]
         else {
             return nil
         }
         
         // ["type": "request", "values": ["key"]]
-        if type == "request", let key = values[safe: 0] as? Key {
+        if type == "request", let key = args[safe: 0] as? Key {
             self = Request(key)
         }
         
         // ["type": "response", "values": ["key", "value"]]
-        else if type == "response", let key = values[safe: 0] as? Key {
-            self = Response(key, values[safe: 1])
+        else if type == "response", let key = args[safe: 0] as? Key {
+            self = Response(key, args[safe: 1])
         }
         
         // ["type": "insert", "values": [["key1", "key2"]]]
-        else if type == "insert", let keys = values[safe: 0] as? [Key] {
+        else if type == "insert", let keys = args[safe: 0] as? [Key] {
             self = Insert(keys)
         }
         
         // ["type": "delete", "values": [["key1", "key2"]]]
-        else if type == "delete", let keys = values[safe: 0] as? [Key] {
+        else if type == "delete", let keys = args[safe: 0] as? [Key] {
             self = Delete(keys)
         }
         
@@ -104,7 +104,7 @@ internal enum Message {
     internal func toData() -> NSData {
         return KeyArchiver.archive([
             "type": type,
-            "values": values
+            "args": args
         ])
     }
 }
