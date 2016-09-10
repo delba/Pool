@@ -42,7 +42,7 @@ open class Pool {
         session.delegate = self
     }
     
-    open func objectForKey(_ key: String, completion: ((Any?) -> Void)) {
+    open func objectForKey(_ key: String, completion: @escaping ((Any?) -> Void)) {
         if let object = local[key] {
             completion(object)
             return
