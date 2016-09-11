@@ -79,7 +79,7 @@ internal class Session: NSObject {
     
     private func sendMessage(message: Message, toPeers peers: [MCPeerID]) {
         let data = message.toData()
-        try! session.sendData(data, toPeers: peers, withMode: .Reliable)
+        try? session.sendData(data, toPeers: peers, withMode: .Reliable)
     }
 }
 
