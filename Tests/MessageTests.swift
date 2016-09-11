@@ -38,7 +38,6 @@ class MessageTests: XCTestCase {
     
     func testResponse() {
         let message: Message = .response("a", 42)
-        print(message.values)
         let data = message.toData()
         
         guard case .response("a", let value) = Message(data: data)! else {
