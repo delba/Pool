@@ -24,7 +24,7 @@
 
 import MultipeerConnectivity
 
-internal typealias Key = String
+internal typealias Key = AnyHashable
 internal typealias Value = Any
 
 open class Pool {
@@ -42,7 +42,7 @@ open class Pool {
         session.delegate = self
     }
     
-    open func objectForKey(_ key: String, completion: @escaping ((Any?) -> Void)) {
+    open func objectForKey(_ key: AnyHashable, completion: @escaping ((Any?) -> Void)) {
         if let object = local[key] {
             completion(object)
             return
@@ -58,7 +58,7 @@ open class Pool {
         session.sendRequest(key, toPeers: [peer])
     }
     
-    open func setObject(_ object: Any, forKey key: String) {
+    open func setObject(_ object: Any, forKey key: AnyHashable) {
         if local[key] == nil {
             session.sendInsert([key], toPeers: session.peers)
         }
@@ -66,7 +66,7 @@ open class Pool {
         local[key] = object
     }
     
-    open func removeObjectForKey(_ key: String) {
+    open func removeObjectForKey(_ key: AnyHashable) {
         if local[key] != nil {
             session.sendDelete([key], toPeers: session.peers)
         }

@@ -30,7 +30,7 @@ class MessageTests: XCTestCase {
         let message: Message = .request("a")
         let data = message.toData()
         
-        guard case .request("a") = Message(data: data)! else {
+        guard case .request(AnyHashable("a")) = Message(data: data)! else {
             XCTFail()
             return
         }
@@ -40,7 +40,7 @@ class MessageTests: XCTestCase {
         let message: Message = .response("a", 42)
         let data = message.toData()
         
-        guard case .response("a", let value) = Message(data: data)! else {
+        guard case .response(AnyHashable("a"), let value) = Message(data: data)! else {
             XCTFail()
             return
         }
