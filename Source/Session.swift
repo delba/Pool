@@ -86,7 +86,7 @@ internal class Session: NSObject {
 // MARK: - MCNearbyServiceAdvertiserDelegate
 
 extension Session: MCNearbyServiceAdvertiserDelegate {
-    func advertiser(advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: NSData?, invitationHandler: (Bool, MCSession) -> Void) {
+    func advertiser(advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: NSData?, invitationHandler: (Bool, MCSession?) -> Void) {
         invitationHandler(true, session)
     }
 }
