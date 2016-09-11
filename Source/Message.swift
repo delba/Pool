@@ -26,16 +26,16 @@
 
 internal enum Message {
     /// A request message for the given key.
-    case request(Key)
+    case request(Pool.Key)
     
     /// A response message with the given key and value.
-    case response(Key, Value?)
+    case response(Pool.Key, Pool.Value?)
     
     /// An insert message for the given keys.
-    case insert([Key])
+    case insert([Pool.Key])
     
     /// A delete message for the given keys.
-    case delete([Key])
+    case delete([Pool.Key])
     
     /// The message type.
     fileprivate var type: String {
@@ -96,7 +96,7 @@ internal enum Message {
 
 fileprivate extension Message {
     init?(request args: [Any]) {
-        guard let key = args[safe: 0] as? Key else { return nil }
+        guard let key = args[safe: 0] as? Pool.Key else { return nil }
         
         self = .request(key)
     }
@@ -106,7 +106,7 @@ fileprivate extension Message {
 
 fileprivate extension Message {
     init?(response args: [Any]) {
-        guard let key = args[safe: 0] as? Key else { return nil }
+        guard let key = args[safe: 0] as? Pool.Key else { return nil }
         
         let value = args[safe: 1]
         
@@ -118,7 +118,7 @@ fileprivate extension Message {
 
 fileprivate extension Message {
     init?(insert args: [Any]) {
-        guard let keys = args[safe: 0] as? [Key] else { return nil }
+        guard let keys = args[safe: 0] as? [Pool.Key] else { return nil }
         
         self = .insert(keys)
     }
@@ -128,7 +128,7 @@ fileprivate extension Message {
 
 fileprivate extension Message {
     init?(delete args: [Any]) {
-        guard let keys = args[safe: 0] as? [Key] else { return nil }
+        guard let keys = args[safe: 0] as? [Pool.Key] else { return nil }
         
         self = .delete(keys)
     }

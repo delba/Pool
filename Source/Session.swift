@@ -57,22 +57,22 @@ internal class Session: NSObject {
         advertiser.stopAdvertisingPeer()
     }
     
-    internal func sendRequest(_ key: Key, toPeers peers: [MCPeerID]) {
+    internal func sendRequest(_ key: Pool.Key, toPeers peers: [MCPeerID]) {
         let message: Message = .request(key)
         sendMessage(message, toPeers: peers)
     }
     
-    internal func sendResponse(_ key: Key, value: Value?, toPeers peers: [MCPeerID]) {
+    internal func sendResponse(_ key: Pool.Key, value: Pool.Value?, toPeers peers: [MCPeerID]) {
         let message: Message = .response(key, value)
         sendMessage(message, toPeers: peers)
     }
     
-    internal func sendInsert(_ keys: [Key], toPeers peers: [MCPeerID]) {
+    internal func sendInsert(_ keys: [Pool.Key], toPeers peers: [MCPeerID]) {
         let message: Message = .insert(keys)
         sendMessage(message, toPeers: peers)
     }
     
-    internal func sendDelete(_ keys: [Key], toPeers peers: [MCPeerID]) {
+    internal func sendDelete(_ keys: [Pool.Key], toPeers peers: [MCPeerID]) {
         let message: Message = .delete(keys)
         sendMessage(message, toPeers: peers)
     }
